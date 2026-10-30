@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-canvas: #000000;
+  --color-surface-1: #161823;
+  --color-surface-overlay: #1f1f1f;
+  --color-ink: #ffffff;
+  --color-ink-mute: #a8a8a8;
+  --color-ink-soft: #737373;
+  --color-hairline: #3a3a3a;
+  --color-hairline-soft: #4a4a4a;
+  --color-primary: #fe2c55;
+  --color-primary-cyan: #25f4ee;
+  --color-on-primary: #ffffff;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-snap: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+}
+
+html, body {
+  background-color: #000000;
+  color: #ffffff;
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom TikTok-fidelity utilities */
+.scrim-top {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 100%);
+  height: 120px;
+}
+
+.scrim-bottom {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%);
+  height: 240px;
+}
+
+.rail-drop-shadow {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 12s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes spin-disc {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-disc {
+  animation: spin-disc 6s linear infinite;
+}
+
+.paused {
+  animation-play-state: paused !important;
+}
+
+/* Hide scrollbars for snap feed while keeping scroll functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
