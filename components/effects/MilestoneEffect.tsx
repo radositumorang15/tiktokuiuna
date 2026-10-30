@@ -55,3 +55,4 @@ export function MilestoneEffect({ onComplete }: MilestoneEffectProps) {
     </div>
   );
 }
+

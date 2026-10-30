@@ -44,3 +44,4 @@ export function GlitchHeart({ onComplete }: GlitchHeartProps) {
     </div>
   );
 }
+

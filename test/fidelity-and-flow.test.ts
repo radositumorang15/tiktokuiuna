@@ -52,3 +52,4 @@ describe("Content Slots & Fidelity Rules", () => {
     expect(siteConfig.unlock.bonusAfterReposts).toBe(3);
   });
 });
+

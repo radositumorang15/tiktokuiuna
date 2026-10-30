@@ -60,3 +60,4 @@ export function DoubleTapHeart({ heart, onComplete }: DoubleTapHeartProps) {
     </div>
   );
 }
+

@@ -74,3 +74,4 @@ export function CaptionOverlay({ item }: CaptionOverlayProps) {
     </div>
   );
 }
+

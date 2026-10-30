@@ -76,3 +76,4 @@ for (const entry of entries) {
 
 fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2), "utf-8");
 console.log(`Manifest updated at ${manifestPath}`);
+

@@ -127,3 +127,4 @@ export function wish(action: WishAction, ctx?: { clipId?: string; n?: number; cl
     }
   }
 }
+

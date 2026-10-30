@@ -113,3 +113,4 @@ export function BottomNav({ isHomeOverlay = false }: BottomNavProps) {
     </footer>
   );
 }
+

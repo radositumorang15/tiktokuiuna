@@ -54,3 +54,4 @@ export function useActiveItem(containerRef: React.RefObject<HTMLDivElement | nul
 
   return activeIndex;
 }
+

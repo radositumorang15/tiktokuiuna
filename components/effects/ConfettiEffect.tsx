@@ -39,3 +39,4 @@ export function ConfettiEffect({ onComplete }: ConfettiEffectProps) {
 
   return null;
 }
+

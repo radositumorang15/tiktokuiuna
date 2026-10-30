@@ -15,3 +15,4 @@ export function formatCount(count: number | string): string {
   }
   return count.toString();
 }
+

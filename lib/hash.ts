@@ -16,3 +16,4 @@ export async function sha256(text: string): Promise<string> {
     throw new Error("SHA-256 is not supported in this environment");
   }
 }
+

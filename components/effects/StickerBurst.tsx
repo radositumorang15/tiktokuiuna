@@ -62,3 +62,4 @@ export function StickerBurst({ onComplete }: StickerBurstProps) {
     </div>
   );
 }
+
