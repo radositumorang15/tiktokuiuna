@@ -6,6 +6,7 @@ interface ProgressBarProps {
   progress: number; // 0 to 1
   totalSegments?: number; // for photos
   currentSegment?: number; // for photos
+  segmentProgress?: number; // 0 to 1 progress of current photo
   onSeek?: (ratio: number) => void;
 }
 
@@ -13,6 +14,7 @@ export function ProgressBar({
   progress,
   totalSegments,
   currentSegment = 0,
+  segmentProgress,
   onSeek,
 }: ProgressBarProps) {
   const [isPressing, setIsPressing] = useState(false);
@@ -40,13 +42,16 @@ export function ProgressBar({
     onSeek(ratio);
   };
 
+  const activeSegmentFill =
+    segmentProgress !== undefined ? segmentProgress : progress;
+
   return (
     <div
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerUp}
-      aria-label="Video scrubber"
+      aria-label="Progress bar"
       role="progressbar"
       aria-valuenow={Math.round(progress * 100)}
       aria-valuemin={0}
@@ -57,21 +62,27 @@ export function ProgressBar({
       }}
     >
       {totalSegments && totalSegments > 1 ? (
-        /* Photo segmented progress */
+        /* TikTok-style Photo Segmented Story Progress Bar */
         <div className="w-full flex items-center gap-1.5 px-3">
           {Array.from({ length: totalSegments }).map((_, idx) => (
             <div
               key={idx}
-              className={`flex-1 transition-all duration-200 ${
+              className={`relative flex-1 ${
                 isPressing ? "h-[5px]" : "h-[2px]"
-              } rounded-full ${
-                idx === currentSegment
-                  ? "bg-white"
-                  : idx < currentSegment
-                  ? "bg-white/80"
-                  : "bg-white/30"
-              }`}
-            />
+              } rounded-full bg-white/25 overflow-hidden transition-all duration-150`}
+            >
+              <div
+                className="absolute inset-y-0 left-0 bg-white"
+                style={{
+                  width:
+                    idx < currentSegment
+                      ? "100%"
+                      : idx === currentSegment
+                      ? `${Math.min(100, Math.max(0, activeSegmentFill * 100))}%`
+                      : "0%",
+                }}
+              />
+            </div>
           ))}
         </div>
       ) : (
@@ -90,4 +101,3 @@ export function ProgressBar({
     </div>
   );
 }
-

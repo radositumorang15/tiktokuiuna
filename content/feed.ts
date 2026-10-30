@@ -1,5 +1,6 @@
 import { defaultSlots, type ContentSlot } from "./slots";
 import manifestData from "./manifest.json";
+import slotsJsonData from "./slots.json";
 import { type LikeEffect } from "./site";
 
 export type FeedItem = {
@@ -59,13 +60,31 @@ type ManifestSlot = {
   height?: number;
 };
 
-export function getFeedItems(isDev: boolean = process.env.NODE_ENV !== "production"): FeedItem[] {
+export function getFeedItems(
+  isDev: boolean = process.env.NODE_ENV !== "production",
+  customSlots?: ContentSlot[]
+): FeedItem[] {
   const manifestSlots = (manifestData?.slots || {}) as Record<string, ManifestSlot>;
+  const sourceSlots: ContentSlot[] = customSlots || (slotsJsonData as ContentSlot[]) || defaultSlots;
   const items: FeedItem[] = [];
 
-  for (const slot of defaultSlots) {
-    const media = manifestSlots[slot.id];
-    const hasMedia = !!media && ((media.type === "video" && !!media.src) || (media.type === "photo" && !!media.files?.length));
+  for (const slot of sourceSlots) {
+    const manifestMedia = manifestSlots[slot.id];
+
+    // Check direct media on slot (from uploader/CRUD) first
+    const hasDirectVideo = slot.type === "video" && !!slot.src;
+    const hasDirectPhotos =
+      (slot.type === "photo-carousel" || slot.type === "photo-slideshow") &&
+      !!slot.photos &&
+      slot.photos.length > 0;
+
+    // Check manifest media fallback
+    const hasManifestMedia =
+      !!manifestMedia &&
+      ((manifestMedia.type === "video" && !!manifestMedia.src) ||
+        (manifestMedia.type === "photo" && !!manifestMedia.files?.length));
+
+    const hasMedia = hasDirectVideo || hasDirectPhotos || hasManifestMedia;
 
     if (!hasMedia) {
       if (isDev) {
@@ -94,13 +113,13 @@ export function getFeedItems(isDev: boolean = process.env.NODE_ENV !== "producti
       continue;
     }
 
-    if (media.type === "video") {
+    if (slot.type === "video") {
       items.push({
         id: slot.id,
         slot: slot.id,
         type: "video",
-        src: media.src,
-        poster: media.poster || "",
+        src: slot.src || manifestMedia?.src,
+        poster: slot.poster || manifestMedia?.poster || "",
         caption: slot.caption,
         hashtags: slot.hashtags,
         song: slot.song,
@@ -112,16 +131,25 @@ export function getFeedItems(isDev: boolean = process.env.NODE_ENV !== "producti
         wish: slot.wish,
       });
     } else {
+      // Photo Carousel / Slideshow
+      const photos =
+        hasDirectPhotos && slot.photos
+          ? slot.photos.map((p, idx) => ({
+              src: p.src,
+              caption: p.caption || `${slot.caption} (${idx + 1}/${slot.photos?.length})`,
+            }))
+          : (manifestMedia?.files || []).map((fileSrc, idx) => ({
+              src: fileSrc,
+              caption: `${slot.caption} (${idx + 1}/${manifestMedia?.files?.length})`,
+            }));
+
       items.push({
         id: slot.id,
         slot: slot.id,
         type: "photo",
-        photos: (media.files || []).map((fileSrc, idx) => ({
-          src: fileSrc,
-          caption: `${slot.caption} (${idx + 1}/${media.files?.length})`,
-        })),
-        poster: media.poster || media.files?.[0] || "",
-        photoMode: slot.photoMode || "swipe",
+        photos,
+        poster: slot.poster || manifestMedia?.poster || photos[0]?.src || "",
+        photoMode: slot.photoMode || (slot.type === "photo-slideshow" ? "slideshow" : "swipe"),
         photoStyle: slot.photoStyle || "plain",
         secondsPerPhoto: slot.secondsPerPhoto || 3,
         caption: slot.caption,
@@ -139,4 +167,3 @@ export function getFeedItems(isDev: boolean = process.env.NODE_ENV !== "producti
 
   return items;
 }
-

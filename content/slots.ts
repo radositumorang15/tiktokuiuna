@@ -42,6 +42,9 @@ export type ContentSlot = {
   photoMode?: "swipe" | "slideshow";
   photoStyle?: "plain" | "kenburns" | "polaroid" | "stack";
   secondsPerPhoto?: number;
+  src?: string;
+  poster?: string;
+  photos?: { src: string; caption?: string }[];
 };
 
 export const defaultSlots: ContentSlot[] = [

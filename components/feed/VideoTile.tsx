@@ -19,6 +19,7 @@ export function VideoTile({
   onPlayStateChange,
 }: VideoTileProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showPlayIcon, setShowPlayIcon] = useState(false);
   const [speed, setSpeed] = useState(1);
@@ -30,45 +31,73 @@ export function VideoTile({
   const lastTapRef = useRef<number>(0);
   const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // If item has custom audio, use it and mute video. Otherwise, video audio is the sound!
+  const hasCustomAudio = Boolean(item.song?.audio);
+
   // Sync play/pause with active state
   useEffect(() => {
     const video = videoRef.current;
+    const audio = audioRef.current;
     if (!video) return;
 
     if (isActive) {
       video.currentTime = 0;
+      if (audio) audio.currentTime = 0;
+
+      // If has custom audio, video is muted to prevent clash. Otherwise, video audio is unmuted according to global muted state.
+      video.muted = hasCustomAudio ? true : muted;
+      if (audio) audio.muted = muted;
+
       video
         .play()
         .then(() => {
           setIsPlaying(true);
           onPlayStateChange?.(true);
+          if (hasCustomAudio && audio) {
+            audio.play().catch(() => {});
+          }
         })
         .catch(() => {
           // Autoplay policy prevented playback, keep muted fallback
           video.muted = true;
+          if (audio) audio.muted = true;
           video.play().catch(() => {});
+          if (hasCustomAudio && audio) {
+            audio.play().catch(() => {});
+          }
           setIsPlaying(true);
           onPlayStateChange?.(true);
         });
     } else {
       video.pause();
+      if (audio) audio.pause();
       setIsPlaying(false);
       onPlayStateChange?.(false);
     }
-  }, [isActive, onPlayStateChange]);
+  }, [isActive, hasCustomAudio, muted, onPlayStateChange]);
 
   // Sync mute state
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.muted = muted;
+      videoRef.current.muted = hasCustomAudio ? true : muted;
     }
-  }, [muted]);
+    if (audioRef.current) {
+      audioRef.current.muted = muted;
+    }
+  }, [muted, hasCustomAudio]);
 
-  // Update progress
+  // Update progress & sync audio loop
   const handleTimeUpdate = () => {
     const video = videoRef.current;
+    const audio = audioRef.current;
     if (!video || !video.duration) return;
     onProgress?.(video.currentTime / video.duration);
+
+    if (hasCustomAudio && audio && !audio.paused) {
+      if (Math.abs(audio.currentTime - video.currentTime) > 0.35) {
+        audio.currentTime = video.currentTime;
+      }
+    }
   };
 
   // Toggle Play/Pause on single tap vs double-tap detection
@@ -112,15 +141,22 @@ export function VideoTile({
 
   const togglePlay = () => {
     const video = videoRef.current;
+    const audio = audioRef.current;
     if (!video) return;
 
     if (video.paused) {
       video.play();
+      if (hasCustomAudio && audio) {
+        audio.play().catch(() => {});
+      }
       setIsPlaying(true);
       onPlayStateChange?.(true);
       wish("pause");
     } else {
       video.pause();
+      if (hasCustomAudio && audio) {
+        audio.pause();
+      }
       setIsPlaying(false);
       setShowPlayIcon(true);
       onPlayStateChange?.(false);
@@ -133,6 +169,9 @@ export function VideoTile({
     setSpeed(newSpeed);
     if (videoRef.current) {
       videoRef.current.playbackRate = newSpeed;
+    }
+    if (audioRef.current) {
+      audioRef.current.playbackRate = newSpeed;
     }
     setShowSpeedSheet(false);
     if (newSpeed === 2) wish("speedUp");
@@ -156,7 +195,7 @@ export function VideoTile({
             Slot {item.slot} Kosong
           </h3>
           <p className="text-[13px] text-[#a8a8a8] max-w-[260px]">
-            Taruh video di <code className="text-primary font-mono">content/media/{item.slot}/video.mp4</code> lalu jalankan <code className="text-white">npm run media</code>
+            Taruh video di <code className="text-primary font-mono">content/media/{item.slot}/video.mp4</code> atau unggah lewat Studio.
           </p>
         </div>
       ) : (
@@ -167,18 +206,29 @@ export function VideoTile({
             style={{ backgroundImage: `url(${item.poster || ""})` }}
           />
 
-          {/* Native video element */}
+          {/* Native video element (plays video audio if no custom song is set) */}
           <video
             ref={videoRef}
             src={item.src}
             poster={item.poster}
-            muted={muted}
+            muted={hasCustomAudio ? true : muted}
             playsInline
             loop
             preload={isActive ? "auto" : "metadata"}
             onTimeUpdate={handleTimeUpdate}
             className="relative z-10 w-full h-full object-cover"
           />
+
+          {/* Custom audio track (if set) */}
+          {hasCustomAudio && item.song.audio && (
+            <audio
+              ref={audioRef}
+              src={item.song.audio}
+              loop
+              preload={isActive ? "auto" : "none"}
+              className="hidden"
+            />
+          )}
         </>
       )}
 

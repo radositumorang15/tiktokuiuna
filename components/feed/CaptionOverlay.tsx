@@ -13,6 +13,12 @@ interface CaptionOverlayProps {
 export function CaptionOverlay({ item }: CaptionOverlayProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // If video and no custom song audio was uploaded, video's native audio is the sound
+  const isNativeVideoSound = item.type === "video" && !item.song?.audio;
+  const songDisplayText = isNativeVideoSound && (!item.song.title || item.song.title.includes("Akustik Santai") || item.song.title.startsWith("Suara asli"))
+    ? `Suara asli - @${siteConfig.couple.myUsername || item.song.artist}`
+    : `${item.song.title} — ${item.song.artist}`;
+
   return (
     <div
       className="absolute left-[12px] z-30 flex flex-col pointer-events-auto"
@@ -63,10 +69,10 @@ export function CaptionOverlay({ item }: CaptionOverlayProps) {
         <div className="relative overflow-hidden w-full h-[20px] flex items-center">
           <div className="animate-marquee">
             <span className="text-[14px] leading-[20px] font-normal text-white mr-8 select-none">
-              {item.song.title} — {item.song.artist}
+              {songDisplayText}
             </span>
             <span className="text-[14px] leading-[20px] font-normal text-white mr-8 select-none">
-              {item.song.title} — {item.song.artist}
+              {songDisplayText}
             </span>
           </div>
         </div>
@@ -74,4 +80,3 @@ export function CaptionOverlay({ item }: CaptionOverlayProps) {
     </div>
   );
 }
-

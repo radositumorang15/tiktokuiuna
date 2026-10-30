@@ -20,6 +20,7 @@ export function FeedColumn() {
   const [items, setItems] = useState<FeedItem[]>([]);
   const [videoProgress, setVideoProgress] = useState(0);
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [photoSegmentProgress, setPhotoSegmentProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [flyingPoster, setFlyingPoster] = useState<string | null>(null);
 
@@ -32,12 +33,39 @@ export function FeedColumn() {
 
   // Load feed items, respecting bonus unlock
   useEffect(() => {
-    const rawItems = getFeedItems();
-    const filtered = rawItems.filter((it) => {
-      if (it.id === "bonus" && !bonusUnlocked) return false;
-      return true;
-    });
-    setItems(filtered);
+    let isMounted = true;
+    async function loadSlots() {
+      try {
+        const res = await fetch("/api/slots", {
+          cache: "no-store",
+          headers: { "Cache-Control": "no-cache" },
+        });
+        const data = await res.json();
+        if (data.success && Array.isArray(data.slots) && isMounted) {
+          const rawItems = getFeedItems(process.env.NODE_ENV !== "production", data.slots);
+          const filtered = rawItems.filter((it) => {
+            if (it.id === "bonus" && !bonusUnlocked) return false;
+            return true;
+          });
+          setItems(filtered);
+          return;
+        }
+      } catch {
+        // Fallback to static
+      }
+      if (isMounted) {
+        const rawItems = getFeedItems();
+        const filtered = rawItems.filter((it) => {
+          if (it.id === "bonus" && !bonusUnlocked) return false;
+          return true;
+        });
+        setItems(filtered);
+      }
+    }
+    loadSlots();
+    return () => {
+      isMounted = false;
+    };
   }, [bonusUnlocked]);
 
   // Wish trigger every 3 clips
@@ -137,6 +165,7 @@ export function FeedColumn() {
                   item={item}
                   isActive={isActive}
                   onPhotoIndexChange={setPhotoIndex}
+                  onProgress={setPhotoSegmentProgress}
                 />
               )
             )}
@@ -153,9 +182,10 @@ export function FeedColumn() {
 
             {/* Progress Bar directly above bottom nav */}
             <ProgressBar
-              progress={videoProgress}
+              progress={item.type === "photo" ? photoSegmentProgress : videoProgress}
               totalSegments={item.type === "photo" ? item.photos?.length : undefined}
               currentSegment={item.type === "photo" ? photoIndex : undefined}
+              segmentProgress={item.type === "photo" ? photoSegmentProgress : undefined}
             />
           </article>
         );
