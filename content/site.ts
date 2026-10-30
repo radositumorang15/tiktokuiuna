@@ -274,10 +274,10 @@ export const siteConfig: SiteConfig = {
       },
     },
   },
-  // Default anniversary date: 12 April 2023 -> 12042023 SHA-256
+  // Gate PIN: 172312 -> SHA-256
   gateHash:
     process.env.NEXT_PUBLIC_GATE_HASH ||
-    "4d559c2abc753813189a1d8f09ef51e77fbca77ee63145fd0e99fdf5f16dd7e9",
+    "443d69a9f49646bb392f73b3e4e055bd32ef2b77c6bbd75119e561cac7db7809",
   whatsapp: {
     number: "6281234567890",
     templates: {
@@ -355,3 +355,4 @@ export const siteConfig: SiteConfig = {
     ],
   },
 };
+
