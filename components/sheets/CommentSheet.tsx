@@ -1,17 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import { useStore } from "@/lib/store";
+import { useStore, type UserComment } from "@/lib/store";
 import { defaultSlots } from "@/content/slots";
 import { wish } from "@/lib/wishes";
 import { siteConfig } from "@/content/site";
+
+const EMPTY_COMMENTS: UserComment[] = [];
 
 export function CommentSheet() {
   const isOpen = useStore((s) => s.isCommentOpen);
   const clipId = useStore((s) => s.activeCommentClipId);
   const closeComments = useStore((s) => s.closeComments);
   const addComment = useStore((s) => s.addComment);
-  const userComments = useStore((s) => (clipId ? s.userComments[clipId] || [] : []));
+  const allUserComments = useStore((s) => s.userComments);
+  const userComments = clipId && allUserComments[clipId] ? allUserComments[clipId] : EMPTY_COMMENTS;
 
   const [commentInput, setCommentInput] = useState("");
   const [isTypingReply, setIsTypingReply] = useState(false);
@@ -216,3 +219,4 @@ export function CommentSheet() {
     </div>
   );
 }
+

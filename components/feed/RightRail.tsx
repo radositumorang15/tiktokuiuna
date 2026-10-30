@@ -34,10 +34,11 @@ export function RightRail({ item, isPlaying, onRepostFlight }: RightRailProps) {
   const openShare = useStore((s) => s.openShare);
   const openSongSheet = useStore((s) => s.openSongSheet);
   const triggerRepostGlitch = useStore((s) => s.triggerRepostGlitch);
+  const addedCommentsCount = useStore((s) => s.userComments[item.id]?.length || 0);
 
   // Dynamic counts based on base + user action
   const likesCount = item.baseCounts.likes + (liked ? 1 : 0);
-  const commentsCount = item.baseCounts.comments + (useStore.getState().userComments[item.id]?.length || 0);
+  const commentsCount = item.baseCounts.comments + addedCommentsCount;
   const savesCount = item.baseCounts.saves + (saved ? 1 : 0);
   const repostsCount = item.baseCounts.reposts + (reposted ? 1 : 0);
   const sharesCount = item.baseCounts.shares;
@@ -253,3 +254,4 @@ export function RightRail({ item, isPlaying, onRepostFlight }: RightRailProps) {
     </aside>
   );
 }
+
