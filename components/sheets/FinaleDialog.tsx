@@ -25,7 +25,7 @@ export function FinaleDialog() {
   const holdIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const fullLetter = siteConfig.finale.body;
-  const turningAge = siteConfig.birthday.turning || 22;
+  const turningAge = siteConfig.birthday.turning || 24;
 
   // Initialize Microphone for candle blow ritual
   useEffect(() => {

@@ -98,7 +98,7 @@ export const siteConfig: SiteConfig = {
   },
   birthday: {
     date: "2026-10-30",
-    turning: 22,
+    turning: 24,
     wishes: {
       enabled: true,
       minGapMs: 4000,

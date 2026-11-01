@@ -43,7 +43,7 @@ export function replacePlaceholders(
 ): string {
   const daysTogether = calculateDaysTogether();
   const nama = siteConfig.couple.her || "Sayang";
-  const umur = siteConfig.birthday.turning || 22;
+  const umur = siteConfig.birthday.turning || 24;
   const n = ctx?.n !== undefined ? ctx.n.toString() : "1";
   const judul = ctx?.clipTitle || "momen ini";
 
