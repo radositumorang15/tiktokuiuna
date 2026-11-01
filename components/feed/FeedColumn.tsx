@@ -15,15 +15,6 @@ import { siteConfig } from "@/content/site";
 
 export function FeedColumn() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const activeIndex = useActiveItem(containerRef);
-
-  const [items, setItems] = useState<FeedItem[]>([]);
-  const [videoProgress, setVideoProgress] = useState(0);
-  const [photoIndex, setPhotoIndex] = useState(0);
-  const [photoSegmentProgress, setPhotoSegmentProgress] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [flyingPoster, setFlyingPoster] = useState<string | null>(null);
-
   const reposts = useStore((s) => s.reposts);
   const toggleLike = useStore((s) => s.toggleLike);
   const toggleMute = useStore((s) => s.toggleMute);
@@ -31,42 +22,64 @@ export function FeedColumn() {
 
   const bonusUnlocked = reposts.length >= siteConfig.unlock.bonusAfterReposts;
 
-  // Load feed items, respecting bonus unlock
-  useEffect(() => {
-    let isMounted = true;
-    async function loadSlots() {
-      try {
-        const res = await fetch("/api/slots", {
-          cache: "no-store",
-          headers: { "Cache-Control": "no-cache" },
-        });
-        const data = await res.json();
-        if (data.success && Array.isArray(data.slots) && isMounted) {
-          const rawItems = getFeedItems(process.env.NODE_ENV !== "production", data.slots);
-          const filtered = rawItems.filter((it) => {
-            if (it.id === "bonus" && !bonusUnlocked) return false;
-            return true;
-          });
-          setItems(filtered);
-          return;
-        }
-      } catch {
-        // Fallback to static
-      }
-      if (isMounted) {
-        const rawItems = getFeedItems();
+  // Initialize with static slots immediately to prevent empty-feed mounting glitch
+  const [items, setItems] = useState<FeedItem[]>(() => {
+    try {
+      const initial = getFeedItems();
+      return initial.filter((it) => it.id !== "bonus" || bonusUnlocked);
+    } catch {
+      return [];
+    }
+  });
+
+  const activeIndex = useActiveItem(containerRef, items.length);
+
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const [photoSegmentProgress, setPhotoSegmentProgress] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [flyingPoster, setFlyingPoster] = useState<string | null>(null);
+
+  // Load latest feed items from /api/slots, respecting bonus unlock
+  const loadSlots = useCallback(async () => {
+    try {
+      const res = await fetch("/api/slots", {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" },
+      });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.slots)) {
+        const rawItems = getFeedItems(process.env.NODE_ENV !== "production", data.slots);
         const filtered = rawItems.filter((it) => {
           if (it.id === "bonus" && !bonusUnlocked) return false;
           return true;
         });
         setItems(filtered);
       }
+    } catch {
+      // Fallback to static
     }
-    loadSlots();
-    return () => {
-      isMounted = false;
-    };
   }, [bonusUnlocked]);
+
+  useEffect(() => {
+    loadSlots();
+
+    // Auto-sync whenever user focuses tab, switches back from Studio, or storage changes
+    const onSync = () => {
+      loadSlots();
+    };
+    window.addEventListener("focus", onSync);
+    window.addEventListener("storage", onSync);
+    window.addEventListener("forus_slots_updated", onSync);
+    document.addEventListener("visibilitychange", onSync);
+
+    return () => {
+      window.removeEventListener("focus", onSync);
+      window.removeEventListener("storage", onSync);
+      window.removeEventListener("forus_slots_updated", onSync);
+      document.removeEventListener("visibilitychange", onSync);
+    };
+  }, [loadSlots]);
 
   // Wish trigger every 3 clips
   const prevIndexRef = useRef(0);
@@ -137,8 +150,8 @@ export function FeedColumn() {
     >
       {items.map((item, index) => {
         const isActive = index === activeIndex;
-        // Only mount video/active elements within +/- 1 range for peak performance
-        const shouldMountMedia = Math.abs(index - activeIndex) <= 1;
+        // Mount media within +/- 2 range for preloading & zero-blank swiping
+        const shouldMountMedia = Math.abs(index - activeIndex) <= 2;
 
         return (
           <article
@@ -155,6 +168,7 @@ export function FeedColumn() {
             {shouldMountMedia && (
               item.type === "video" ? (
                 <VideoTile
+                  key={`${item.id}-${item.src}`}
                   item={item}
                   isActive={isActive}
                   onProgress={setVideoProgress}
@@ -162,6 +176,7 @@ export function FeedColumn() {
                 />
               ) : (
                 <PhotoTile
+                  key={`${item.id}-${item.photoStyle}-${item.secondsPerPhoto}-${item.photos?.length || 0}`}
                   item={item}
                   isActive={isActive}
                   onPhotoIndexChange={setPhotoIndex}

@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import { execFile } from "child_process";
+import { promisify } from "util";
 import heicConvert from "heic-convert";
 import sharp from "sharp";
 
-export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+const execFileAsync = promisify(execFile);
 
-// Maximum file size: 100MB for video, 25MB for photo/audio
-const MAX_VIDEO_SIZE = 100 * 1024 * 1024;
+export const dynamic = "force-dynamic";
+export const maxDuration = 120;
+
+// Maximum file size: 250MB for video, 25MB for photo/audio
+const MAX_VIDEO_SIZE = 250 * 1024 * 1024;
 const MAX_IMAGE_SIZE = 25 * 1024 * 1024;
 
 export async function POST(req: NextRequest) {
@@ -98,6 +102,59 @@ export async function POST(req: NextRequest) {
         ext = ".jpg";
       } catch (sharpErr) {
         console.warn("Sharp image optimization skipped:", sharpErr);
+      }
+    }
+
+    // Auto-compress large videos using ffmpeg (H.264 CRF 23 visually lossless, 1080p max width, faststart for streaming)
+    if (isVideo) {
+      const tempId = `${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+      const tempInput = path.join(uploadDir, `tmp_in_${tempId}${ext}`);
+      const tempOutput = path.join(uploadDir, `tmp_out_${tempId}.mp4`);
+
+      try {
+        fs.writeFileSync(tempInput, buffer);
+        await execFileAsync("ffmpeg", [
+          "-y",
+          "-i",
+          tempInput,
+          "-c:v",
+          "libx264",
+          "-crf",
+          "23",
+          "-preset",
+          "fast",
+          "-movflags",
+          "+faststart",
+          "-vf",
+          "scale=min(1080\\,iw):-2",
+          "-c:a",
+          "aac",
+          "-b:a",
+          "128k",
+          tempOutput,
+        ]);
+
+        if (fs.existsSync(tempOutput) && fs.statSync(tempOutput).size > 0) {
+          const compSize = fs.statSync(tempOutput).size;
+          // Use compressed file if smaller or if converting non-mp4
+          if (compSize < buffer.length || ext.toLowerCase() !== ".mp4") {
+            buffer = fs.readFileSync(tempOutput);
+            ext = ".mp4";
+          }
+        }
+      } catch (ffmpegErr) {
+        console.warn("FFmpeg compression skipped or not available:", ffmpegErr);
+      } finally {
+        if (fs.existsSync(tempInput)) {
+          try {
+            fs.unlinkSync(tempInput);
+          } catch {}
+        }
+        if (fs.existsSync(tempOutput)) {
+          try {
+            fs.unlinkSync(tempOutput);
+          } catch {}
+        }
       }
     }
 

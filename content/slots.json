@@ -50,7 +50,7 @@
     "id": "slot-02",
     "type": "photo-carousel",
     "title": "Aquarium Pertama",
-    "photoStyle": "plain",
+    "photoStyle": "kenburns",
     "photoMode": "swipe",
     "caption": "Aquarium pertama✨",
     "hashtags": [
@@ -108,7 +108,7 @@
   },
   {
     "id": "slot-03",
-    "type": "video",
+    "type": "photo-carousel",
     "title": "Klip Nostalgia & Perjalanan",
     "caption": "Nggak berasa waktu berjalan secepat ini bareng kamu. Setiap detik terlalu berharga.",
     "hashtags": [
@@ -202,6 +202,66 @@
     "wish": "Semoga sehat selalu yaa"
   },
   {
+    "id": "slot-13",
+    "type": "photo-slideshow",
+    "title": "First safari date <3",
+    "caption": "❤️✨ #kitaberdua #forus",
+    "hashtags": [
+      "kitaberdua",
+      "forus"
+    ],
+    "photoStyle": "polaroid",
+    "photoMode": "swipe",
+    "secondsPerPhoto": 3,
+    "song": {
+      "title": "Lagu Kenangan Baru",
+      "artist": "Kita Berdua",
+      "cover": "/covers/song-1.jpg"
+    },
+    "baseCounts": {
+      "likes": 1,
+      "comments": 0,
+      "saves": 0,
+      "shares": 0,
+      "reposts": 0
+    },
+    "onLike": {
+      "effect": "confetti"
+    },
+    "comments": [],
+    "autoReply": {
+      "text": "Terima kasih sudah selalu ada di sisiku sayang! ❤️",
+      "delayMs": 1200
+    },
+    "photos": [
+      {
+        "src": "/uploads/photos/img_2978-1793553862031-179.jpg",
+        "caption": "<3"
+      },
+      {
+        "src": "/uploads/photos/img_2951-1793553897520-621.jpg",
+        "caption": "<3"
+      },
+      {
+        "src": "/uploads/photos/img_2978-1793553899521-469.jpg",
+        "caption": "<3"
+      },
+      {
+        "src": "/uploads/photos/img_2990-1793553901642-954.jpg",
+        "caption": "<3"
+      },
+      {
+        "src": "/uploads/photos/img_3033-1793553903569-266.jpg",
+        "caption": "<3"
+      },
+      {
+        "src": "/uploads/photos/img_2950-1793553906182-533.jpg",
+        "caption": "<3"
+      }
+    ],
+    "poster": "/uploads/photos/img_2978-1793553862031-179.jpg"
+  },
+  {
     "id": "slot-05",
     "type": "video",
     "title": "Pesan Spesial Dari Aku",
@@ -245,10 +305,10 @@
   {
     "id": "slot-06",
     "type": "photo-carousel",
-    "title": "Polaroid Hal-Hal Kecil",
+    "title": "Pantai pertama",
     "photoStyle": "polaroid",
     "photoMode": "swipe",
-    "caption": "Hal-hal kecil yang bikin aku jatuh cinta berkali-kali sama kamu 📸✨",
+    "caption": "Garut  once upon a time📸✨",
     "hashtags": [
       "polaroid",
       "detailcinta",
@@ -280,7 +340,27 @@
     "autoReply": {
       "text": "Setiap detail kecil tentangmu selalu kucatat rapi di hati. Happy birthday kesayangan!",
       "delayMs": 1200
-    }
+    },
+    "photos": [
+      {
+        "src": "/uploads/photos/dsc_0001-1793552433556-674.jpg",
+        "caption": "love"
+      },
+      {
+        "src": "/uploads/photos/dsc_0003-1793552434025-74.jpg",
+        "caption": "you"
+      },
+      {
+        "src": "/uploads/photos/dsc_0005-1793552434398-294.jpg",
+        "caption": "unaa"
+      },
+      {
+        "src": "/uploads/photos/dsc_0005-1-1793552434726-545.jpg",
+        "caption": "<3"
+      }
+    ],
+    "poster": "/uploads/photos/dsc_0001-1793552433556-674.jpg",
+    "wish": "Semoga panjang umur sehat selalu yaa"
   },
   {
     "id": "slot-07",
@@ -323,10 +403,10 @@
   {
     "id": "slot-08",
     "type": "photo-carousel",
-    "title": "Trip & Liburan Kita",
+    "title": "Siblings Date",
     "photoStyle": "stack",
     "photoMode": "swipe",
-    "caption": "Setiap sudut kota yang kita kunjungi selalu jadi lebih indah karena ada kamu 🌊🗺️",
+    "caption": "Sebelum balik solo",
     "hashtags": [
       "traveltogether",
       "pantai",
@@ -361,7 +441,26 @@
     "autoReply": {
       "text": "Surat kecil ini kubuat saat memandang laut bersamamu. Semoga kita bisa menjelajahi dunia bersama selamanya.",
       "delayMs": 1200
-    }
+    },
+    "photos": [
+      {
+        "src": "/uploads/photos/ds194416-1793552587808-917.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/ds194427-1793552588085-952.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/ds194354-1793552588322-136.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/ds194405-1793552588634-109.jpg",
+        "caption": ""
+      }
+    ],
+    "poster": "/uploads/photos/ds194416-1793552587808-917.jpg"
   },
   {
     "id": "slot-09",
@@ -404,11 +503,11 @@
   {
     "id": "slot-10",
     "type": "photo-slideshow",
-    "title": "Masa Depan Kita",
-    "photoStyle": "plain",
+    "title": "First Air Terjun di Solo",
+    "photoStyle": "stack",
     "photoMode": "slideshow",
     "secondsPerPhoto": 3,
-    "caption": "Menatap ke depan: semoga mimpi-mimpi indah yang kita obrolin tiap malam segera terwujud 🏡✨",
+    "caption": " semoga mimpi-mimpi indah yang kita obrolin tiap malam segera terwujud 🏡✨",
     "hashtags": [
       "masadepan",
       "doabersama",
@@ -440,7 +539,22 @@
     "autoReply": {
       "text": "Aamiin ya rabbal alamin. Semoga kita terus saling menjaga sampai rambut kita memutih.",
       "delayMs": 1200
-    }
+    },
+    "photos": [
+      {
+        "src": "/uploads/photos/img_1605-1793553162283-492.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/img_1606-1793553164688-400.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/img_1604-1793553167071-58.jpg",
+        "caption": ""
+      }
+    ],
+    "poster": "/uploads/photos/img_1605-1793553162283-492.jpg"
   },
   {
     "id": "bonus",

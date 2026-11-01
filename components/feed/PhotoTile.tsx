@@ -214,7 +214,7 @@ export function PhotoTile({
         <>
           {/* Sliding Photos Track */}
           <div
-            className="flex w-full h-full transition-transform duration-350 ease-out"
+            className="flex w-full h-full transition-transform duration-500 ease-out"
             style={{
               transform: `translateX(-${currentIndex * 100}%)`,
             }}
@@ -233,30 +233,61 @@ export function PhotoTile({
                   />
 
                   {/* Photo Styling Variant */}
-                  <div
-                    className={`relative z-10 w-full h-full flex items-center justify-center ${
-                      item.photoStyle === "polaroid"
-                        ? "p-6"
-                        : item.photoStyle === "stack"
-                        ? "p-4"
-                        : ""
-                    }`}
-                  >
+                  <div className="relative z-10 w-full h-full flex items-center justify-center">
                     {item.photoStyle === "polaroid" ? (
                       /* Polaroid frame with rotation */
-                      <div className="bg-white p-3 pb-10 shadow-2xl rounded-sm transform rotate-[-1.5deg] max-w-[92%] max-h-[85%] flex flex-col transition-transform duration-300">
-                        <img
-                          src={photo.src}
-                          alt={photo.caption || "Momen Kita"}
-                          loading="eager"
-                          decoding="async"
-                          className="w-full h-full object-cover max-h-[58vh]"
+                      <div
+                        className="bg-white p-3 pb-8 shadow-2xl rounded-sm max-w-[90%] max-h-[82%] flex flex-col items-center justify-between transition-all duration-500 ease-out border border-[#e5e5e5]"
+                        style={{
+                          transform: isCurrent
+                            ? `rotate(${idx % 2 === 0 ? "-2.5deg" : "2.5deg"}) scale(1)`
+                            : `rotate(${idx % 2 === 0 ? "4deg" : "-4deg"}) scale(0.92)`,
+                        }}
+                      >
+                        <div className="w-full aspect-[4/5] overflow-hidden bg-black rounded-xs">
+                          <img
+                            src={photo.src}
+                            alt={photo.caption || "Momen Kita"}
+                            loading="eager"
+                            decoding="async"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <p className="text-[#1a1a1a] text-[13px] font-semibold mt-3 text-center tracking-tight font-sans">
+                          {photo.caption || item.caption || `Momen #${idx + 1}`}
+                        </p>
+                      </div>
+                    ) : item.photoStyle === "stack" ? (
+                      /* Stack of cards */
+                      <div className="relative w-full h-full flex items-center justify-center p-6">
+                        <div
+                          className="absolute w-[82%] aspect-[9/14] bg-[#222] rounded-2xl border border-white/10 shadow-2xl transition-transform duration-500 pointer-events-none"
+                          style={{
+                            transform: `rotate(${idx % 2 === 0 ? "4deg" : "-4deg"}) scale(0.94)`,
+                            opacity: 0.6,
+                          }}
                         />
-                        {photo.caption && (
-                          <p className="text-[#1f1f1f] text-[13px] font-medium mt-3 text-center tracking-tight">
-                            {photo.caption}
-                          </p>
-                        )}
+                        <div
+                          className="relative z-10 w-[86%] aspect-[9/14] rounded-2xl overflow-hidden bg-[#161823] border border-white/20 shadow-2xl transition-all duration-500 flex flex-col"
+                          style={{
+                            transform: isCurrent
+                              ? "rotate(0deg) scale(1)"
+                              : `rotate(${idx % 2 === 0 ? "-3deg" : "3deg"}) scale(0.96)`,
+                          }}
+                        >
+                          <img
+                            src={photo.src}
+                            alt={photo.caption || "Momen"}
+                            loading="eager"
+                            decoding="async"
+                            className="w-full h-full object-cover"
+                          />
+                          {photo.caption && (
+                            <div className="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/80 to-transparent text-[12px] font-semibold text-white">
+                              {photo.caption}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     ) : item.photoStyle === "kenburns" ? (
                       /* Ken Burns slow zoom */
@@ -265,9 +296,13 @@ export function PhotoTile({
                         alt={photo.caption || "Momen"}
                         loading="eager"
                         decoding="async"
-                        className={`w-full h-full object-contain transition-transform duration-[4000ms] linear ${
-                          isActive && isCurrent ? "scale-105" : "scale-100"
-                        }`}
+                        style={{
+                          animation:
+                            isActive && isCurrent
+                              ? `kenBurnsZoom ${durationMs}ms ease-in-out infinite alternate`
+                              : "none",
+                        }}
+                        className="w-full h-full object-contain"
                       />
                     ) : (
                       /* Plain 9:16 cover/contain */

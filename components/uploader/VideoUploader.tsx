@@ -25,10 +25,10 @@ export function VideoUploader({
     if (!file) return;
 
     // Client-side pre-validation: check size before making request
-    const maxSize = 100 * 1024 * 1024; // 100 MB
+    const maxSize = 250 * 1024 * 1024; // 250 MB
     if (file.size > maxSize) {
       setErrorMessage(
-        `Ukuran video terlalu besar (${(file.size / (1024 * 1024)).toFixed(1)} MB). Maksimal ukuran file adalah 100 MB. Coba gunakan video yang lebih pendek atau kompres video.`
+        `Ukuran video terlalu besar (${(file.size / (1024 * 1024)).toFixed(1)} MB). Maksimal ukuran file adalah 250 MB.`
       );
       return;
     }
@@ -234,8 +234,8 @@ export function VideoUploader({
           accept="video/mp4,video/webm,video/quicktime,.mp4,.mov,.webm"
           onFilesSelected={handleVideoSelect}
           isUploading={isUploading}
-          label="Unggah Video Klip (.mp4 / .mov / .webm)"
-          hint="Rasio vertikal 9:16 disarankan, maksimal 100 MB"
+          label={isUploading ? "Mengunggah & Mengompres Otomatis..." : "Unggah Video Klip (.mp4 / .mov / .webm)"}
+          hint="Rasio vertikal 9:16 disarankan, maksimal 250 MB (otomatis dikompresi kualitas jernih)"
           icon="🎬"
         />
       )}

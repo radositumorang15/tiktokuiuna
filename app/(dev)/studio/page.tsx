@@ -9,7 +9,9 @@ import {
   AudioUploader,
 } from "@/components/uploader";
 import { PhotoTile } from "@/components/feed/PhotoTile";
+import { VideoTile } from "@/components/feed/VideoTile";
 import { type FeedItem } from "@/content/feed";
+import { useStore } from "@/lib/store";
 
 export default function StudioPage() {
   const [slots, setSlots] = useState<ContentSlot[]>(defaultSlots);
@@ -17,7 +19,8 @@ export default function StudioPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
-  const [previewMuted, setPreviewMuted] = useState<boolean>(true);
+  const muted = useStore((s) => s.muted);
+  const toggleMute = useStore((s) => s.toggleMute);
 
   // New slot dialog state
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
@@ -91,12 +94,36 @@ export default function StudioPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setSaveStatus(`💾 Media ${slot.id} berhasil diunggah & tersimpan otomatis! ✨`);
-        setTimeout(() => setSaveStatus(null), 3500);
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("forus_slots_updated"));
+          try {
+            localStorage.setItem("forus_slots_sync", Date.now().toString());
+          } catch {}
+        }
+        setSaveStatus(`💾 Perubahan ${slot.id} tersimpan otomatis ke slots.json! ✨`);
+        setTimeout(() => setSaveStatus(null), 3000);
       }
     } catch (err) {
       console.error("Auto save failed:", err);
     }
+  };
+
+  // Update and immediately auto-save selected slot
+  const updateAndSaveSelectedSlot = (fields: Partial<ContentSlot>) => {
+    const updated: ContentSlot = { ...selectedSlot, ...fields };
+    updateSelectedSlot(fields);
+    autoSaveSlot(updated);
+  };
+
+  // Debounced auto-save for text inputs (title, caption, wish, autoReply)
+  const debounceTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const updateWithDebouncedSave = (fields: Partial<ContentSlot>) => {
+    const updated: ContentSlot = { ...selectedSlot, ...fields };
+    updateSelectedSlot(fields);
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => {
+      autoSaveSlot(updated);
+    }, 600);
   };
 
   // Save current slots to server JSON
@@ -111,6 +138,12 @@ export default function StudioPage() {
       });
       const data = await res.json();
       if (data.success) {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("forus_slots_updated"));
+          try {
+            localStorage.setItem("forus_slots_sync", Date.now().toString());
+          } catch {}
+        }
         setSaveStatus("Semua perubahan tersimpan ke content/slots.json! ✨");
         setTimeout(() => setSaveStatus(null), 3500);
       } else {
@@ -434,7 +467,7 @@ export default function StudioPage() {
                     <input
                       type="text"
                       value={selectedSlot.title || ""}
-                      onChange={(e) => updateSelectedSlot({ title: e.target.value })}
+                      onChange={(e) => updateWithDebouncedSave({ title: e.target.value })}
                       placeholder="Contoh: Kencan Pertama Kita"
                       className="w-full px-3 py-2 rounded-lg bg-[#12141d] border border-[#3a3a3a] text-white text-[13px] focus:outline-none focus:border-primary"
                     />
@@ -447,7 +480,7 @@ export default function StudioPage() {
                     <select
                       value={selectedSlot.type}
                       onChange={(e) =>
-                        updateSelectedSlot({
+                        updateAndSaveSelectedSlot({
                           type: e.target.value as ContentSlot["type"],
                         })
                       }
@@ -537,7 +570,7 @@ export default function StudioPage() {
                           <select
                             value={selectedSlot.photoStyle || "plain"}
                             onChange={(e) =>
-                              updateSelectedSlot({
+                              updateAndSaveSelectedSlot({
                                 photoStyle: e.target.value as ContentSlot["photoStyle"],
                               })
                             }
@@ -563,7 +596,7 @@ export default function StudioPage() {
                               step={0.5}
                               value={selectedSlot.secondsPerPhoto || 3.5}
                               onChange={(e) =>
-                                updateSelectedSlot({
+                                updateAndSaveSelectedSlot({
                                   secondsPerPhoto: Number(e.target.value),
                                 })
                               }
@@ -617,7 +650,7 @@ export default function StudioPage() {
                       autoSaveSlot(updated);
                     }}
                     onSongInfoChange={(fields) => {
-                      updateSelectedSlot({
+                      updateWithDebouncedSave({
                         song: {
                           ...selectedSlot.song,
                           ...fields,
@@ -636,7 +669,7 @@ export default function StudioPage() {
                     <textarea
                       rows={3}
                       value={selectedSlot.caption}
-                      onChange={(e) => updateSelectedSlot({ caption: e.target.value })}
+                      onChange={(e) => updateWithDebouncedSave({ caption: e.target.value })}
                       placeholder="Tulis caption romantis untuk pacarmu..."
                       className="w-full px-3 py-2 rounded-lg bg-[#12141d] border border-[#3a3a3a] text-white text-[13px] focus:outline-none focus:border-primary leading-relaxed"
                     />
@@ -650,7 +683,7 @@ export default function StudioPage() {
                       type="text"
                       value={(selectedSlot.hashtags || []).join(", ")}
                       onChange={(e) =>
-                        updateSelectedSlot({
+                        updateWithDebouncedSave({
                           hashtags: e.target.value
                             .split(",")
                             .map((h) => h.trim().replace(/^#/, ""))
@@ -672,7 +705,7 @@ export default function StudioPage() {
                     <select
                       value={selectedSlot.onLike?.effect || "confetti"}
                       onChange={(e) =>
-                        updateSelectedSlot({
+                        updateAndSaveSelectedSlot({
                           onLike: { effect: e.target.value as LikeEffect },
                         })
                       }
@@ -696,7 +729,7 @@ export default function StudioPage() {
                     <input
                       type="text"
                       value={selectedSlot.wish || ""}
-                      onChange={(e) => updateSelectedSlot({ wish: e.target.value })}
+                      onChange={(e) => updateWithDebouncedSave({ wish: e.target.value })}
                       placeholder="Doa manis untuk klip ini (opsional)..."
                       className="w-full px-3 py-2 rounded-lg bg-[#12141d] border border-[#3a3a3a] text-white text-[12px] focus:outline-none focus:border-primary"
                     />
@@ -712,7 +745,7 @@ export default function StudioPage() {
                     type="text"
                     value={selectedSlot.autoReply?.text || ""}
                     onChange={(e) =>
-                      updateSelectedSlot({
+                      updateWithDebouncedSave({
                         autoReply: { text: e.target.value, delayMs: 1200 },
                       })
                     }
@@ -731,10 +764,10 @@ export default function StudioPage() {
                 </span>
                 <button
                   type="button"
-                  onClick={() => setPreviewMuted((m) => !m)}
+                  onClick={toggleMute}
                   className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1"
                 >
-                  {previewMuted ? "🔇 Suara Mati" : "🔊 Suara Hidup"}
+                  {muted ? "🔇 Suara Mati" : "🔊 Suara Hidup"}
                 </button>
               </div>
 
@@ -744,25 +777,11 @@ export default function StudioPage() {
                 <div className="absolute inset-0 bg-black flex items-center justify-center overflow-hidden">
                   {selectedSlot.type === "video" ? (
                     selectedSlot.src ? (
-                      <>
-                        <video
-                          src={selectedSlot.src}
-                          poster={selectedSlot.poster}
-                          autoPlay
-                          loop
-                          muted={selectedSlot.song.audio ? true : previewMuted}
-                          playsInline
-                          className="w-full h-full object-cover"
-                        />
-                        {selectedSlot.song.audio && (
-                          <audio
-                            src={selectedSlot.song.audio}
-                            autoPlay
-                            loop
-                            muted={previewMuted}
-                          />
-                        )}
-                      </>
+                      <VideoTile
+                        key={`${selectedSlot.id}-${selectedSlot.src}`}
+                        item={previewFeedItem}
+                        isActive={true}
+                      />
                     ) : (
                       <div className="flex flex-col items-center justify-center p-6 text-center">
                         <span className="text-[36px] mb-2">🎬</span>
@@ -791,22 +810,12 @@ export default function StudioPage() {
                       </div>
                     )
                   ) : selectedSlot.photos && selectedSlot.photos.length > 0 ? (
-                    <>
-                      <PhotoTile
-                        key={`${selectedSlot.id}-${selectedSlot.photos?.length || 0}`}
-                        item={previewFeedItem}
-                        isActive={true}
-                        showInternalProgressBar={true}
-                      />
-                      {selectedSlot.song.audio && (
-                        <audio
-                          src={selectedSlot.song.audio}
-                          autoPlay
-                          loop
-                          muted={previewMuted}
-                        />
-                      )}
-                    </>
+                    <PhotoTile
+                      key={`${selectedSlot.id}-${selectedSlot.photoStyle}-${selectedSlot.secondsPerPhoto}-${selectedSlot.photos?.length || 0}`}
+                      item={previewFeedItem}
+                      isActive={true}
+                      showInternalProgressBar={true}
+                    />
                   ) : (
                     <div className="flex flex-col items-center justify-center p-6 text-center">
                       <span className="text-[36px] mb-2">📸</span>
