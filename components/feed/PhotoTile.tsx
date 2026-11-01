@@ -265,18 +265,18 @@ export function PhotoTile({
                         alt={photo.caption || "Momen"}
                         loading="eager"
                         decoding="async"
-                        className={`w-full h-full object-cover transition-transform duration-[4000ms] linear ${
+                        className={`w-full h-full object-contain transition-transform duration-[4000ms] linear ${
                           isActive && isCurrent ? "scale-105" : "scale-100"
                         }`}
                       />
                     ) : (
-                      /* Plain 9:16 full cover */
+                      /* Plain 9:16 cover/contain */
                       <img
                         src={photo.src}
                         alt={photo.caption || "Momen"}
                         loading="eager"
                         decoding="async"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                     )}
                   </div>
