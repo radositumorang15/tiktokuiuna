@@ -106,6 +106,9 @@ export async function POST(req: NextRequest) {
     }
 
     // Auto-compress large videos using ffmpeg (H.264 CRF 23 visually lossless, 1080p max width, faststart for streaming)
+    const originalSize = buffer.length;
+    let isCompressed = false;
+
     if (isVideo) {
       const tempId = `${Date.now()}_${Math.floor(Math.random() * 1000)}`;
       const tempInput = path.join(uploadDir, `tmp_in_${tempId}${ext}`);
@@ -123,6 +126,10 @@ export async function POST(req: NextRequest) {
           "23",
           "-preset",
           "fast",
+          "-maxrate",
+          "4500k",
+          "-bufsize",
+          "9000k",
           "-movflags",
           "+faststart",
           "-vf",
@@ -140,6 +147,7 @@ export async function POST(req: NextRequest) {
           if (compSize < buffer.length || ext.toLowerCase() !== ".mp4") {
             buffer = fs.readFileSync(tempOutput);
             ext = ".mp4";
+            isCompressed = true;
           }
         }
       } catch (ffmpegErr) {
@@ -177,6 +185,8 @@ export async function POST(req: NextRequest) {
       url: publicUrl,
       filename: finalFilename,
       size: buffer.length,
+      originalSize,
+      isCompressed,
       type: isImage && ext === ".jpg" ? "image/jpeg" : file.type,
       category: subfolder,
     });

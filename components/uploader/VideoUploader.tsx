@@ -16,6 +16,11 @@ export function VideoUploader({
 }: VideoUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [uploadStats, setUploadStats] = useState<{
+    size: number;
+    originalSize?: number;
+    isCompressed?: boolean;
+  } | null>(null);
   const videoPreviewRef = useRef<HTMLVideoElement>(null);
   const posterInputRef = useRef<HTMLInputElement>(null);
 
@@ -49,6 +54,14 @@ export function VideoUploader({
       const data = await res.json();
       if (!res.ok || !data.success) {
         throw new Error(data.error || "Gagal mengunggah video ke server");
+      }
+
+      if (data.size) {
+        setUploadStats({
+          size: data.size,
+          originalSize: data.originalSize,
+          isCompressed: data.isCompressed,
+        });
       }
 
       const uploadedUrl = data.url;
@@ -184,6 +197,26 @@ export function VideoUploader({
               <p className="text-[12px] text-[#a8a8a8]">
                 Video siap tayang di feed (rasio vertikal 9:16).
               </p>
+
+              {uploadStats ? (
+                <div className="text-[11px] text-green-400 bg-green-950/40 border border-green-800/60 rounded px-2.5 py-1.5 flex flex-col gap-0.5">
+                  <div className="flex items-center gap-1 font-semibold">
+                    <span>⚡ Terkompresi Otomatis (1080p HD Lossless)</span>
+                  </div>
+                  <div className="text-white/70 text-[11px]">
+                    Ukuran: {(uploadStats.size / (1024 * 1024)).toFixed(1)} MB
+                    {uploadStats.originalSize && uploadStats.originalSize > uploadStats.size && (
+                      <span className="text-green-300 font-semibold">
+                        {" "}(hemat {Math.round((1 - uploadStats.size / uploadStats.originalSize) * 100)}% dari {(uploadStats.originalSize / (1024 * 1024)).toFixed(1)} MB)
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-[11px] text-[#25f4ee] bg-[#25f4ee]/10 border border-[#25f4ee]/30 rounded px-2.5 py-1 flex items-center gap-1">
+                  <span>⚡ Siap streaming lancar (H.264 FastStart 1080p)</span>
+                </div>
+              )}
 
               {/* Poster info */}
               <div className="pt-2 border-t border-[#3a3a3a] flex items-center gap-3">
