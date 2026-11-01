@@ -94,7 +94,7 @@ export const useStore = create<ForUsState>()(
       followed: false,
       userComments: {},
       finaleSeen: false,
-      muted: true,
+      muted: false,
       wishesEnabled: true,
       wishCursor: {},
       activeEffect: null,
@@ -110,7 +110,7 @@ export const useStore = create<ForUsState>()(
       isFinaleOpen: false,
       repostGlitchTarget: false,
 
-      unlockGate: () => set({ unlocked: true }),
+      unlockGate: () => set({ unlocked: true, muted: false }),
       setLastIndex: (index) => set({ lastIndex: index }),
 
       toggleLike: (clipId, effectToTrigger, payload) => {

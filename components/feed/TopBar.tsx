@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { LiveDot, SearchIcon } from "@/components/icons/TikTokIcons";
+import { LiveDot, SearchIcon, VolumeIcon, VolumeMuteIcon } from "@/components/icons/TikTokIcons";
+import { useStore } from "@/lib/store";
 import { wish } from "@/lib/wishes";
 
 interface TopBarProps {
@@ -16,6 +17,28 @@ export function TopBar({
   onTabChange,
   showBanner = true,
 }: TopBarProps) {
+  const muted = useStore((s) => s.muted);
+  const toggleMute = useStore((s) => s.toggleMute);
+
+  const handleToggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const willBeMuted = !muted;
+    toggleMute();
+    wish(willBeMuted ? "mute" : "unmute");
+
+    // Immediately unmute media elements within this user gesture
+    if (!willBeMuted) {
+      document.querySelectorAll<HTMLVideoElement>("video").forEach((v) => {
+        v.muted = false;
+        v.play().catch(() => {});
+      });
+      document.querySelectorAll<HTMLAudioElement>("audio").forEach((a) => {
+        a.muted = false;
+        a.play().catch(() => {});
+      });
+    }
+  };
+
   const handleTabClick = (tab: "mengikuti" | "untukkita") => {
     onTabChange?.(tab);
     if (tab === "mengikuti") {
@@ -49,7 +72,7 @@ export function TopBar({
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
         {/* Left: Decorative LIVE icon */}
-        <div className="w-8 flex items-center justify-start">
+        <div className="min-w-[64px] flex items-center justify-start">
           <button
             type="button"
             aria-label="LIVE kita"
@@ -92,7 +115,19 @@ export function TopBar({
         </nav>
 
         {/* Right: Search icon */}
-        <div className="w-8 flex items-center justify-end">
+        <div className="min-w-[64px] flex items-center justify-end gap-1.5">
+          <button
+            type="button"
+            onClick={handleToggleMute}
+            aria-label={muted ? "Nyalakan suara" : "Matikan suara"}
+            className="p-1 text-white active:scale-90 transition-transform flex items-center justify-center rounded-full hover:bg-white/10"
+          >
+            {muted ? (
+              <VolumeMuteIcon size={22} className="text-[#fe2c55]" />
+            ) : (
+              <VolumeIcon size={22} className="text-white" />
+            )}
+          </button>
           <Link
             href="/discover"
             onClick={handleSearchClick}

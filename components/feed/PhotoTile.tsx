@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { type FeedItem } from "@/content/feed";
 import { useStore } from "@/lib/store";
 import { wish } from "@/lib/wishes";
+import { VolumeMuteIcon } from "@/components/icons/TikTokIcons";
 
 interface PhotoTileProps {
   item: FeedItem;
@@ -56,7 +57,11 @@ export function PhotoTile({
 
     audio.muted = muted;
     if (isActive && !isPausedHold) {
-      audio.play().catch(() => {});
+      audio.play().catch(() => {
+        audio.muted = true;
+        audio.play().catch(() => {});
+        useStore.setState({ muted: true });
+      });
     } else {
       audio.pause();
     }
@@ -319,6 +324,28 @@ export function PhotoTile({
               );
             })}
           </div>
+
+          {/* Floating TikTok-style unmute badge */}
+          {isActive && hasAudio && muted && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                useStore.getState().toggleMute();
+                wish("unmute");
+                if (audioRef.current) {
+                  audioRef.current.muted = false;
+                  audioRef.current.play().catch(() => {});
+                }
+              }}
+              aria-label="Nyalakan suara musik"
+              className="absolute left-4 z-30 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/65 backdrop-blur-md border border-white/20 text-white text-[12px] font-medium shadow-lg active:scale-95 transition-transform"
+              style={{ top: "calc(64px + env(safe-area-inset-top, 0px))" }}
+            >
+              <VolumeMuteIcon size={16} className="text-[#fe2c55]" />
+              <span>Ketuk untuk bersuara</span>
+            </button>
+          )}
 
           {/* 1/N Pill Top-Right */}
           <div
