@@ -21,40 +21,98 @@ export function VideoUploader({
     originalSize?: number;
     isCompressed?: boolean;
   } | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [uploadStage, setUploadStage] = useState<string | null>(null);
   const videoPreviewRef = useRef<HTMLVideoElement>(null);
   const posterInputRef = useRef<HTMLInputElement>(null);
+
+  // Helper: Upload with real-time percentage progress via XMLHttpRequest
+  const uploadVideoWithXhr = (
+    file: File
+  ): Promise<{
+    url: string;
+    size: number;
+    originalSize?: number;
+    isCompressed?: boolean;
+  }> => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("category", "videos");
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          const pct = Math.round((e.loaded / e.total) * 100);
+          setUploadProgress(pct);
+          if (pct < 100) {
+            setUploadStage(
+              `Mengunggah video: ${pct}% (${(e.loaded / (1024 * 1024)).toFixed(1)} MB / ${(e.total / (1024 * 1024)).toFixed(1)} MB)...`
+            );
+          } else {
+            setUploadStage("Mengompres video otomatis ke 1080p jernih (FFmpeg)... Mohon tunggu sebentar.");
+          }
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            if (data.success) {
+              resolve(data);
+            } else {
+              reject(new Error(data.error || "Gagal mengunggah video"));
+            }
+          } catch {
+            reject(new Error("Respon server tidak valid"));
+          }
+        } else {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            reject(new Error(data.error || `Server error (${xhr.status})`));
+          } catch {
+            reject(new Error(`Server error (${xhr.status})`));
+          }
+        }
+      };
+
+      xhr.onerror = () => {
+        reject(
+          new Error(
+            "Koneksi terputus saat mengunggah video. Pastikan server dev aktif dan coba lagi."
+          )
+        );
+      };
+
+      xhr.open("POST", "/api/upload", true);
+      xhr.send(formData);
+    });
+  };
 
   // Upload video file
   const handleVideoSelect = async (files: File[]) => {
     const file = files[0];
     if (!file) return;
 
-    // Client-side pre-validation: check size before making request
-    const maxSize = 250 * 1024 * 1024; // 250 MB
+    // Client-side pre-validation: allow up to 1 GB (1024 MB) so large phone videos are accepted
+    const maxSize = 1024 * 1024 * 1024; // 1 GB
     if (file.size > maxSize) {
       setErrorMessage(
-        `Ukuran video terlalu besar (${(file.size / (1024 * 1024)).toFixed(1)} MB). Maksimal ukuran file adalah 250 MB.`
+        `Ukuran video terlalu besar (${(file.size / (1024 * 1024)).toFixed(1)} MB). Maksimal ukuran file adalah 1 GB (1024 MB).`
       );
       return;
     }
 
     setIsUploading(true);
+    setUploadProgress(0);
+    setUploadStage(
+      `Mempersiapkan pengunggahan ${(file.size / (1024 * 1024)).toFixed(1)} MB...`
+    );
     setErrorMessage(null);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("category", "videos");
-
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || "Gagal mengunggah video ke server");
-      }
+      const data = await uploadVideoWithXhr(file);
 
       if (data.size) {
         setUploadStats({
@@ -74,14 +132,12 @@ export function VideoUploader({
         onChange(uploadedUrl, posterSrc || "");
       }
     } catch (err: unknown) {
-      let msg = err instanceof Error ? err.message : "Gagal mengunggah video";
-      if (msg.includes("Failed to fetch") || msg.includes("NetworkError")) {
-        msg =
-          "Koneksi terputus ke server saat mengunggah (Failed to fetch). Ini biasanya terjadi sesaat ketika server Next.js sedang merefresh modul atau file terlalu besar. Silakan coba klik dan unggah kembali video Anda.";
-      }
+      const msg = err instanceof Error ? err.message : "Gagal mengunggah video";
       setErrorMessage(msg);
     } finally {
       setIsUploading(false);
+      setUploadProgress(null);
+      setUploadStage(null);
     }
   };
 
@@ -263,14 +319,38 @@ export function VideoUploader({
           </div>
         </div>
       ) : (
-        <MediaUploadDropzone
-          accept="video/mp4,video/webm,video/quicktime,.mp4,.mov,.webm"
-          onFilesSelected={handleVideoSelect}
-          isUploading={isUploading}
-          label={isUploading ? "Mengunggah & Mengompres Otomatis..." : "Unggah Video Klip (.mp4 / .mov / .webm)"}
-          hint="Rasio vertikal 9:16 disarankan, maksimal 250 MB (otomatis dikompresi kualitas jernih)"
-          icon="🎬"
-        />
+        <div className="space-y-3">
+          <MediaUploadDropzone
+            accept="video/mp4,video/webm,video/quicktime,.mp4,.mov,.webm"
+            onFilesSelected={handleVideoSelect}
+            isUploading={isUploading}
+            label={
+              isUploading
+                ? uploadStage || "Mengunggah & Mengompres Otomatis..."
+                : "Unggah Video Klip (.mp4 / .mov / .webm)"
+            }
+            hint="Rasio vertikal 9:16 disarankan, hingga 1 GB (otomatis dikompresi ke 1080p HD jernih)"
+            icon="🎬"
+          />
+
+          {isUploading && uploadProgress !== null && (
+            <div className="w-full bg-[#161823] border border-[#3a3a3a] rounded-xl p-3.5 space-y-2 animate-in fade-in">
+              <div className="flex items-center justify-between text-[12px]">
+                <span className="text-[#a8a8a8] font-medium flex items-center gap-1.5">
+                  <span className="animate-spin inline-block">⏳</span>
+                  {uploadStage}
+                </span>
+                <span className="font-bold text-primary font-mono">{uploadProgress}%</span>
+              </div>
+              <div className="w-full h-2.5 rounded-full bg-black overflow-hidden border border-white/10">
+                <div
+                  className="h-full bg-gradient-to-r from-primary to-cyan-400 transition-all duration-200 rounded-full"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

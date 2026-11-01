@@ -9,11 +9,11 @@ import sharp from "sharp";
 const execFileAsync = promisify(execFile);
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 120;
+export const maxDuration = 300;
 
-// Maximum file size: 250MB for video, 25MB for photo/audio
-const MAX_VIDEO_SIZE = 250 * 1024 * 1024;
-const MAX_IMAGE_SIZE = 25 * 1024 * 1024;
+// Maximum file size: 1GB (1024MB) for video, 50MB for photo/audio
+const MAX_VIDEO_SIZE = 1024 * 1024 * 1024;
+const MAX_IMAGE_SIZE = 50 * 1024 * 1024;
 
 export async function POST(req: NextRequest) {
   try {
@@ -39,13 +39,13 @@ export async function POST(req: NextRequest) {
     // Validate size
     if (isVideo && file.size > MAX_VIDEO_SIZE) {
       return NextResponse.json(
-        { success: false, error: "Ukuran video maksimal 50 MB" },
+        { success: false, error: "Ukuran video maksimal 1 GB (1024 MB)" },
         { status: 400 }
       );
     }
     if ((isImage || isAudio) && file.size > MAX_IMAGE_SIZE) {
       return NextResponse.json(
-        { success: false, error: "Ukuran file gambar/audio maksimal 20 MB" },
+        { success: false, error: "Ukuran file gambar/audio maksimal 50 MB" },
         { status: 400 }
       );
     }
