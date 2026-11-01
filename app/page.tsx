@@ -217,7 +217,7 @@ export default function GatePage() {
         {/* Clue after 5 failures */}
         {failCount >= 5 && (
           <div className="p-3 rounded-lg bg-[#1f1f1f] border border-[#4a4a4a] text-[13px] text-white/90 animate-in fade-in">
-            💡 <span className="font-semibold text-primary">Petunjuk:</span> PIN rahasia kamu adalah <span className="font-mono font-bold text-white">172312</span>
+            💡 <span className="font-semibold text-primary">Petunjuk:</span> PIN rahasia kamu adalah <span className="font-mono font-bold text-white">170322</span>
           </div>
         )}
 

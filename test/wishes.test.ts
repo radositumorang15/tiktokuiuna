@@ -50,8 +50,8 @@ describe("Utils & Formatter", () => {
   });
 
   it("computes SHA-256 hash properly", async () => {
-    const hash = await sha256("172312");
-    expect(hash).toBe("443d69a9f49646bb392f73b3e4e055bd32ef2b77c6bbd75119e561cac7db7809");
+    const hash = await sha256("170322");
+    expect(hash).toBe("08efb0820c68cc572fe977c9a581f2ddecd71cc160b7d396b088c929f4955525");
   });
 });
 

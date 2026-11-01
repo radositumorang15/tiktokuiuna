@@ -23,8 +23,8 @@ const nextConfig: NextConfig = {
       ignored: [
         "**/node_modules/**",
         "**/.git/**",
-        "**/System Volume Information/**",
-        "**/$RECYCLE.BIN/**",
+        /System Volume Information/,
+        /\$RECYCLE\.BIN/,
       ],
     };
     return config;

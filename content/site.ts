@@ -274,10 +274,10 @@ export const siteConfig: SiteConfig = {
       },
     },
   },
-  // Gate PIN: 172312 -> SHA-256
+  // Gate PIN: 170322 -> SHA-256
   gateHash:
     process.env.NEXT_PUBLIC_GATE_HASH ||
-    "443d69a9f49646bb392f73b3e4e055bd32ef2b77c6bbd75119e561cac7db7809",
+    "08efb0820c68cc572fe977c9a581f2ddecd71cc160b7d396b088c929f4955525",
   whatsapp: {
     number: "6281234567890",
     templates: {
