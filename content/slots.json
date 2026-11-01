@@ -1,5 +1,115 @@
 [
   {
+    "id": "finale",
+    "type": "video",
+    "title": "Happy birthday sayang (1) 🎂",
+    "caption": "Love you more panjang umur sehat selalu serta mulia mommy",
+    "hashtags": [
+      "thefinale",
+      "happybirthdaymylove",
+      "kejutan"
+    ],
+    "song": {
+      "title": "Happy Birthday My Everything",
+      "artist": "Orkestra Cinta",
+      "cover": "/covers/song-finale.jpg"
+    },
+    "baseCounts": {
+      "likes": 1,
+      "comments": 100,
+      "saves": 99,
+      "shares": 50,
+      "reposts": 25
+    },
+    "onLike": {
+      "effect": "confetti"
+    },
+    "comments": [
+      {
+        "user": "rado.aja",
+        "text": "Ketuk layar atau tombol di bawah untuk ritual tiup lilin kita ya sayang! 🎂",
+        "creator": true,
+        "time": "Baru saja"
+      }
+    ],
+    "autoReply": {
+      "text": "Selamat ulang tahun sayangku, semoga semua doa di kartu ucapan ini diijabah Allah SWT. Aku sayang kamu!",
+      "delayMs": 1200
+    },
+    "src": "/uploads/videos/rvbo1755-1793558232448-907.mp4",
+    "poster": "/uploads/posters/poster-1793558233009-526.jpg"
+  },
+  {
+    "id": "slot-14",
+    "type": "video",
+    "title": "Happy birthday sayang (2) 🎂",
+    "caption": "Semoga langgeng selamanya ya kita❤️✨ #kitaberdua #forus",
+    "hashtags": [
+      "kitaberdua",
+      "forus"
+    ],
+    "photoStyle": "plain",
+    "photoMode": "swipe",
+    "secondsPerPhoto": 3,
+    "song": {
+      "title": "Suara asli - tes",
+      "artist": "Kita Berdua",
+      "cover": "/covers/song-1.jpg"
+    },
+    "baseCounts": {
+      "likes": 1,
+      "comments": 0,
+      "saves": 0,
+      "shares": 0,
+      "reposts": 0
+    },
+    "onLike": {
+      "effect": "confetti"
+    },
+    "comments": [],
+    "autoReply": {
+      "text": "Terima kasih sudah selalu ada di sisiku sayang! ❤️",
+      "delayMs": 1200
+    },
+    "src": "/uploads/videos/csig0941-1793558334457-225.mp4",
+    "poster": "/uploads/posters/poster-1793558335451-397.jpg"
+  },
+  {
+    "id": "slot-15",
+    "type": "video",
+    "title": "Happy birthday sayang (3) 🎂",
+    "caption": "I always love you ❤️✨ #kitaberdua #forus",
+    "hashtags": [
+      "kitaberdua",
+      "forus"
+    ],
+    "photoStyle": "plain",
+    "photoMode": "swipe",
+    "secondsPerPhoto": 3,
+    "song": {
+      "title": "Suara asli - tes1",
+      "artist": "Kita Berdua",
+      "cover": "/covers/song-1.jpg"
+    },
+    "baseCounts": {
+      "likes": 1,
+      "comments": 0,
+      "saves": 0,
+      "shares": 0,
+      "reposts": 0
+    },
+    "onLike": {
+      "effect": "confetti"
+    },
+    "comments": [],
+    "autoReply": {
+      "text": "Terima kasih sudah selalu ada di sisiku sayang! ❤️",
+      "delayMs": 1200
+    },
+    "src": "/uploads/videos/bmou4975-1793558368584-888.mp4",
+    "poster": "/uploads/posters/poster-1793558369010-326.jpg"
+  },
+  {
     "id": "slot-01",
     "type": "video",
     "title": "Bogor pertamaa",
@@ -107,44 +217,6 @@
     "wish": "Semoga semakin cantik"
   },
   {
-    "id": "slot-03",
-    "type": "video",
-    "title": "Klip Nostalgia & Perjalanan",
-    "caption": "Nggak berasa waktu berjalan secepat ini bareng kamu. Setiap detik terlalu berharga.",
-    "hashtags": [
-      "milestone",
-      "hari_bersama",
-      "sayangku"
-    ],
-    "song": {
-      "title": "Tentang Waktu & Cinta",
-      "artist": "Rado feat. Una",
-      "cover": "/covers/song-3.jpg"
-    },
-    "baseCounts": {
-      "likes": 1,
-      "comments": 20,
-      "saves": 19,
-      "shares": 6,
-      "reposts": 4
-    },
-    "onLike": {
-      "effect": "milestone"
-    },
-    "comments": [
-      {
-        "user": "rado.aja",
-        "text": "Hitungan hari ini bukti kita sudah lewati banyak hal hebat bareng-bareng.",
-        "creator": true,
-        "time": "4j lalu"
-      }
-    ],
-    "autoReply": {
-      "text": "Angka ratusan hari ini cuma awal, kita rayakan sampai ribuan hari nanti ya bidadariku!",
-      "delayMs": 1200
-    }
-  },
-  {
     "id": "slot-04",
     "type": "photo-slideshow",
     "title": "Foto Ucul pertama",
@@ -200,6 +272,46 @@
     ],
     "poster": "/uploads/photos/img_8826-1793375433085-953.jpg",
     "wish": "Semoga sehat selalu yaa"
+  },
+  {
+    "id": "slot-03",
+    "type": "video",
+    "title": "UNBOXING KADO 2025",
+    "caption": "Nggak berasa waktu berjalan secepat ini bareng kamu. Setiap detik terlalu berharga HASIAN.",
+    "hashtags": [
+      "milestone",
+      "hari_bersama",
+      "sayangku"
+    ],
+    "song": {
+      "title": "Tentang Waktu & Cinta",
+      "artist": "Rado feat. Una",
+      "cover": "/covers/song-3.jpg"
+    },
+    "baseCounts": {
+      "likes": 1,
+      "comments": 20,
+      "saves": 19,
+      "shares": 6,
+      "reposts": 4
+    },
+    "onLike": {
+      "effect": "photo-reveal"
+    },
+    "comments": [
+      {
+        "user": "rado.aja",
+        "text": "Hitungan hari ini bukti kita sudah lewati banyak hal hebat bareng-bareng.",
+        "creator": true,
+        "time": "4j lalu"
+      }
+    ],
+    "autoReply": {
+      "text": "Angka ratusan hari ini cuma awal, kita rayakan sampai ribuan hari nanti ya bidadariku!",
+      "delayMs": 1200
+    },
+    "src": "/uploads/videos/screenrecording_11-01-2025_13--1793556069440-226.mp4",
+    "poster": "/uploads/posters/poster-1793556070250-494.jpg"
   },
   {
     "id": "slot-13",
@@ -264,8 +376,8 @@
   {
     "id": "slot-05",
     "type": "video",
-    "title": "Pesan Spesial Dari Aku",
-    "caption": "Pesan singkat dari aku ke kamera buat kamu yang lagi ulang tahun hari ini 🎙️❤️",
+    "title": "Jogja fisrt time",
+    "caption": "Jogja selalu menjadi saksi🎙️❤️",
     "hashtags": [
       "pesanhati",
       "happybirthday",
@@ -300,7 +412,9 @@
     "autoReply": {
       "text": "Makasih sudah mendengarkan suaraku yang pas-pasan ini hehe. Doa terbaikku selalu memelukmu.",
       "delayMs": 1200
-    }
+    },
+    "src": "/uploads/videos/img_1547_3_-1793556357638-611.mp4",
+    "poster": "/uploads/posters/poster-1793556358204-356.jpg"
   },
   {
     "id": "slot-06",
@@ -365,10 +479,10 @@
   {
     "id": "slot-07",
     "type": "video",
-    "title": "Momen Random Kesukaanmu",
-    "caption": "Ingat nggak waktu kita nyasar tapi malah nemu warung es krim paling enak? Wkwk 🍦",
+    "title": "jedag jedug kitahhh",
+    "caption": "Si suka jedah jedug tuh 🍦",
     "hashtags": [
-      "icecreamdate",
+      "villamandisini",
       "randommoment",
       "happyus"
     ],
@@ -398,7 +512,9 @@
     "autoReply": {
       "text": "Nyasar sama kamu itu selalu jadi petualangan terbaik. Nanti kita cari es krim lagi ya!",
       "delayMs": 1200
-    }
+    },
+    "src": "/uploads/videos/copy_0e615790-edb7-4dae-987b-0-1793556501315-905.mp4",
+    "poster": "/uploads/posters/poster-1793556501809-425.jpg"
   },
   {
     "id": "slot-08",
@@ -465,7 +581,7 @@
   {
     "id": "slot-09",
     "type": "video",
-    "title": "Jujur & Tulus",
+    "title": "Tracking pertamaa ",
     "caption": "Mungkin aku bukan yang paling sempurna, tapi bersamamu aku selalu ingin jadi yang terbaik ❤️",
     "hashtags": [
       "tulus",
@@ -498,7 +614,9 @@
     "autoReply": {
       "text": "Terima kasih sudah memilihku untuk menemani harimu. Doaku selalu menyertai setiap langkahmu.",
       "delayMs": 1200
-    }
+    },
+    "src": "/uploads/videos/copy_fa534821-6c43-41f0-8aee-b-1793556732299-69.mp4",
+    "poster": "/uploads/posters/poster-1793556732682-968.jpg"
   },
   {
     "id": "slot-10",
@@ -593,44 +711,80 @@
     "autoReply": {
       "text": "Selamat bidadariku! Bonus cinta spesial buat kamu yang pantang menyerah.",
       "delayMs": 1200
-    }
+    },
+    "src": "/uploads/videos/copy_fa534821-6c43-41f0-8aee-b-1793558186367-457.mp4",
+    "poster": "/uploads/posters/poster-1793558187141-60.jpg"
   },
   {
-    "id": "finale",
-    "type": "video",
-    "title": "Kejutan Puncak Ulang Tahun 🎂",
-    "caption": "Kamu sudah sampai di akhir perjalanan feed ini… tapi ada satu hal terpenting yang mau kukatakan ❤️",
+    "id": "slot-16",
+    "type": "photo-carousel",
+    "title": "GBK FIRST ",
+    "caption": "List terakhir selamanya bersama happy birthday sayangku ❤️✨ #kitaberdua #forus",
     "hashtags": [
-      "thefinale",
-      "happybirthdaymylove",
-      "kejutan"
+      "kitaberdua",
+      "forus"
     ],
+    "photoStyle": "kenburns",
+    "photoMode": "swipe",
+    "secondsPerPhoto": 3,
     "song": {
-      "title": "Happy Birthday My Everything",
-      "artist": "Orkestra Cinta",
-      "cover": "/covers/song-finale.jpg"
+      "title": "Suara asli - GBK FIRST",
+      "artist": "Kita Berdua",
+      "cover": "/covers/song-1.jpg"
     },
     "baseCounts": {
       "likes": 1,
-      "comments": 100,
-      "saves": 99,
-      "shares": 50,
-      "reposts": 25
+      "comments": 0,
+      "saves": 0,
+      "shares": 0,
+      "reposts": 0
     },
     "onLike": {
       "effect": "confetti"
     },
-    "comments": [
+    "comments": [],
+    "autoReply": {
+      "text": "Terima kasih sudah selalu ada di sisiku sayang! ❤️",
+      "delayMs": 1200
+    },
+    "photos": [
       {
-        "user": "rado.aja",
-        "text": "Ketuk layar atau tombol di bawah untuk ritual tiup lilin kita ya sayang! 🎂",
-        "creator": true,
-        "time": "Baru saja"
+        "src": "/uploads/photos/img_1598-1793558595009-208.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/img_1591-1793558595718-896.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/img_1590-1793558596478-588.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/img_1589-1793558597093-257.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/img_5705-1793558597740-630.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/img_5704-1793558598415-226.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/img_1644-1793558599149-575.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/img_1643-1793558599827-51.jpg",
+        "caption": ""
+      },
+      {
+        "src": "/uploads/photos/img_1599-1793558600353-237.jpg",
+        "caption": ""
       }
     ],
-    "autoReply": {
-      "text": "Selamat ulang tahun sayangku, semoga semua doa di kartu ucapan ini diijabah Allah SWT. Aku sayang kamu!",
-      "delayMs": 1200
-    }
+    "poster": "/uploads/photos/img_1598-1793558595009-208.jpg"
   }
 ]

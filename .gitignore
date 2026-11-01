@@ -28,6 +28,5 @@ yarn-error.log*
 Thumbs.db
 node_modules
 
-# Uploads
-public/uploads/*
-!public/uploads/**/.gitkeep
+# Uploads (include all media files for hosting, ignore temp processing files)
+public/uploads/**/tmp_*

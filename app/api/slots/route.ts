@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { defaultSlots, type ContentSlot } from "@/content/slots";
+import slotsJsonData from "@/content/slots.json";
 
 const jsonFilePath = path.join(process.cwd(), "content", "slots.json");
 
@@ -10,15 +11,14 @@ export const revalidate = 0;
 
 function getSlotsFromDisk(): ContentSlot[] {
   try {
-    if (!fs.existsSync(jsonFilePath)) {
-      fs.writeFileSync(jsonFilePath, JSON.stringify(defaultSlots, null, 2), "utf-8");
-      return defaultSlots;
+    if (fs.existsSync(jsonFilePath)) {
+      const raw = fs.readFileSync(jsonFilePath, "utf-8");
+      return JSON.parse(raw) as ContentSlot[];
     }
-    const raw = fs.readFileSync(jsonFilePath, "utf-8");
-    return JSON.parse(raw) as ContentSlot[];
+    return (slotsJsonData as ContentSlot[]) || defaultSlots;
   } catch (err) {
-    console.error("Error reading slots.json:", err);
-    return defaultSlots;
+    console.error("Error reading slots.json from disk, using fallback:", err);
+    return (slotsJsonData as ContentSlot[]) || defaultSlots;
   }
 }
 
